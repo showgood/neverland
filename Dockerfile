@@ -67,6 +67,7 @@ RUN echo "http://nl.alpinelinux.org/alpine/edge/testing" \
     clang \
     xauth \
     xterm \
+    zsh \
     perl \
     py2-pip \
     && git clone https://github.com/tmux-plugins/tmux-yank.git \
@@ -94,6 +95,18 @@ RUN mkdir -p ~/.local/share/fonts \
     && cd ~/.emacs.d \
     && make install \
     && make autoloads
+
+# powerfont for zsh theme
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
+    && cd ~ \
+    && git clone https://github.com/powerline/fonts.git --depth=1 \
+    && cd fonts \
+    && ./install.sh
+
+COPY zshrc $UHOME/.zshrc
+
+USER root
+RUN ssh-keygen -A
 
 #              ssh   mosh
 EXPOSE 80 8080 62222 60001/udp
