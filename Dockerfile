@@ -44,7 +44,8 @@ RUN cd ~ \
     && ./install.py \
     && cd ~ \
     &&  echo '[[ -s /home/dev/.autojump/etc/profile.d/autojump.sh ]] && source /home/dev/.autojump/etc/profile.d/autojump.sh' >> .bashrc \
-    &&  echo '[[ -s /home/dev/.autojump/etc/profile.d/autojump.sh ]] && source /home/dev/.autojump/etc/profile.d/autojump.sh' >> .zshrc
+    &&  echo '[[ -s /home/dev/.autojump/etc/profile.d/autojump.sh ]] && source /home/dev/.autojump/etc/profile.d/autojump.sh' >> .zshrc \
+    && mkdir -p /home/dev/.local/share/autojump
 
 # almighty emacs
 RUN mkdir -p ~/.local/share/fonts \
@@ -61,9 +62,17 @@ RUN mkdir -p ~/.local/share/fonts \
     && make install \
     && make autoloads
 
+USER root
+
+# for pdf-tools
+RUN apk --no-cache --update add automake \
+    autoconf \
+    libpng-dev \
+    glib-dev \
+    poppler-dev
+
 ENV TERM=xterm-256color
 
-USER root
 RUN ssh-keygen -A
 
 COPY start.bash /usr/local/bin/start.bash
